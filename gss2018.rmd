@@ -1,7 +1,7 @@
 ---
 title: "General Social Survey"
-author: "Your Name"
-date: "Year 2020"
+author: "Ben Hardani"
+date: "Summer 2022"
 output: 
   html_document:
     number_sections: true
@@ -26,28 +26,58 @@ source("GrabData.R")
 The data in the dataframe GSSdata is from the 2018 General Social Survey. The first blocks of R-code has selected down a subset of the data to just 16 variables. It has further removed unwanted factor levels in much of the data. Examine the code in the GrabData.R file to see what it is doing. Some of the variables are categorical and others are numerical. Be sure to do a variable analysis before tackling each question.  
 First question - Is opinion on the death penalty (CAPPUN) independent of gun ownership (OWNGUN)?
 
+$H_0$:Null hypothesis:Death penalty and gun ownership are independent  
+$H_A$:Alternative hypothesis:Death penalty and gun ownership are dependent
 
 ## Methods
 
 <!--Decide on your methods:  use "variable analysis" or other appropriate descriptors.  Make sure to choose at least one graphical method and at least one numerical method.!-->
 
-##Results
+Both variables are categorical; each with 2 levels ... OWNGUN YES/NO
+
+so We use  Cat~Cat analysis
+Chi-squared test of independence, fisher exact test for the odds ratio  
+
+## Results  
 
 <!--Divide this section into two sub-sections:  One for your descriptive  results and one for your inferential results.!-->
 
 ### Descriptive Results
 
+```{r}
+barchartGC(~CAPPUN + OWNGUN,data=GSSdata)
+barchartGC(~CAPPUN + OWNGUN,data=GSSdata, type="percent")
+
+```
+
 #### Graphical Descriptive Results
+The graph shows the majority of people are in favor of the death penalty own a gun and the majority of non gun owners also are in favor of the death penalty. A small subsectin of both oppose the death penalty.
 
 <!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question!-->
+
+
 
 #### Numerical Descriptive Results
 
 <!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
 
+```{r}
+table1 <- xtabs(~CAPPUN + OWNGUN,data=GSSdata)
+rowPerc(table1)
+colPerc(table1)
+```
+the numbers show a majority of people that own a gun are in favor of the death penalty at 75% and the majority of people who don't own a gun are opposed to the death penalty at 24% as opposed to the 42% on the right.
 ### Inferential Results
 
 <!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->
+
+```{r}
+chisq.test(table1)
+chisqtestGC(table1)
+fisher.test(table1)
+```
+
+The odds ratio is 2.271:1 and the p-value is 0.01651 therefore we reject the null hypothesis. Every p-value is less then 0.05 so we always fail to reject the null hypothesis that gun ownership and thoughts on capital punishment are independent. 
 
 #  Question 2
 
@@ -55,9 +85,18 @@ First question - Is opinion on the death penalty (CAPPUN) independent of gun own
 
 Is there a difference in years of education (EDUC) between the those who did or did not vote in 2012 (VOTE12)?
 
+$H_0$:Null hypothesis:Years of education and years of voting are independent  
+$H_A$:Alternative hypothesis:Years of education and years of voting are dependent
+
 ## Methods
 
 <!--Decide on your methods:  use "variable analysis" or other appropriate descriptors.  Make sure to choose at least one graphical method and at least one numerical method.!-->
+
+One variable is numerical and one is categorical; each with 2 levels ... EDUC/VOTE12 YES/NO
+
+so We use  Num~Cat analysis
+Chi-squared test of independence, fisher exact test for the odds ratio  boxplot, favstats and t test
+
 
 ##Results
 
@@ -65,48 +104,100 @@ Is there a difference in years of education (EDUC) between the those who did or 
 
 ### Descriptive Results
 
-#### Graphical Descriptive Results
-
-<!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question!-->
-
-#### Numerical Descriptive Results
-
-<!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
-
-### Inferential Results
-
-<!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->
-
-#  Question 3
-
-<!--In this section you explain what you are trying to show.  Where did the data come from?  What is the research or other question you are trying to answer?!-->
-
-Determine if a persons performance on the wordsum test (WORDSUM) is independent of their level of schooling (DEGREE).
-
-## Methods
-
-<!--Decide on your methods:  use "variable analysis" or other appropriate descriptors.  Make sure to choose at least one graphical method and at least one numerical method.!-->
-
-##Results
-
-<!--Divide this section into two sub-sections:  One for your descriptive  results and one for your inferential results.!-->
-
-### Descriptive Results
+```{r}
+boxplot(EDUC~VOTE12,data=GSSdata)
+```
 
 #### Graphical Descriptive Results
 
-<!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question!-->
+<!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question!-->  
+
+The median od voted is higher then that of not voted so there is a difference of if you had an education of not.  
 
 #### Numerical Descriptive Results
 
-<!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
+```{r}
+favstats(EDUC~VOTE12,data=GSSdata)
+```
+<!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->  
 
-### Inferential Results
+The median is higher for those who voted as well as the max amd min points therefore there is a correlation between education and voting  
 
-<!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->
+### Inferential Results  
 
+```{r}
+t.test(EDUC~VOTE12,data=GSSdata)
+```
+
+<!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->  
+
+The p value is significantly smaller then 0.05 therefore we again reject the null hypothesis because voting and education are dependent.  
+
+#  Question 3  
+ 
+
+# Introduction  
+
+<!--In this section you explain what you are trying to show.  Where did the data come from?  What is the research or other question you are trying to answer?!-->  
+
+The data is in the file GSScsv.csv and came from the 2018 General Social Survey.  The question to answer is to resolve this hypothesis.  
+$H_0$ There is no difference between the average score on the WORDSUM test and level of schooling DEGREE    
+$H_a$ There is a significant difference in average score on the WORDSUM test between at least two levels of DEGREE    
+
+# Methods
+
+<!--Decide on your methods:  use "variable analysis" or other appropriate descriptors.  Make sure to choose at least one graphical method and at least one numerical method.!-->  
+
+
+WORDSUM is a numerical variable and degree is a categorical variable  
+  
+# Results
+
+<!--Divide this section into two sub-sections:  One for your descriptive  results and one for your inferential results.!-->  
+
+## Descriptive Results
+
+### Graphical Descriptive Results
+
+<!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question!-->  
+
+```{r}
+boxplot(WORDSUM~DEGREE,data=GSSdata)
+```
+
+The students with a no degree have a median less than students with a bachlors or highschool degree,  
+
+### Numerical Descriptive Results
+
+<!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->  
+
+```{r}
+favstats(WORDSUM~DEGREE,data=GSSdata)
+```
+
+This table shows that the median of graduate students is the highest and the median of the LT high school is the lowest. This table shows a difference in the medians of the WORDSUM test.   
+
+## Inferential Results
+
+<!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->  
+
+```{r}
+model1 <- aov(WORDSUM~DEGREE,data=GSSdata)
+summary.aov(model1)
+```
+
+We reject the null hypothesis because the p value of 0.000236 is less then the 0.05  
+
+```{r}
+#we specify the margins starting at the bottom and proceeding clockwise - thus 8.7 is the left side margin to hold the names of the factors
+par(mar = c(3, 15, 2, 2))
+plot(TukeyHSD(model1),las=2)
+```
+
+The High school and LT high school do not cross the 0 line therefore there is a difference between high school graduate and non high school graduates.  
 
 # Discussion and Conclusion
 
 <!--Discussion and conclusion here.  If you found a relationship be sure to consider whether the relationship occurs because one of the variavbles causes the other, or whether they perhasps are related for some other reason.  Watch the chapter 6 videos from the GeorgeTown videos collection.!-->
-
+  
+There is a difference between the variable. For this reason we reject the null hypothesis  
